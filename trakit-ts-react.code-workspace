@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../trakit-ts-sync"
+		},
+		{
+			"path": "../trakit-ts-commands"
+		},
+		{
+			"path": "../trakit-ts-objects"
+		}
+	],
+	"settings": {}
+}
