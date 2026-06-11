@@ -5,31 +5,47 @@ import {
     guid,
     Machine,
     nothing,
+    url,
     User
 } from '@trakit/objects';
 import {
     TrakitEvent,
     TrakitEventAccount,
     TrakitEventSocketState,
+    TrakitRestfulCommander,
+    TrakitSocketCommander,
     TrakitSyncCommander
 } from '@trakit/sync';
 import {
-    useEffect, useRef,
+RefObject,
+	useEffect,
+	useRef,
     useState
 } from 'react';
 
 /**
  * 
  */
-export default function useConnection() {
+export type UseConnectionResult = {
+	online: boolean;
+	initialized: boolean;
+	synchronizer: TrakitSyncCommander;
+	ghostId: guid | nothing;
+	user: User | nothing;
+	machine: Machine | nothing;
+};
+
+/**
+ * 
+ */
+export default function useConnection(
+	restAddress: URL | url = TrakitRestfulCommander.URI_PROD,
+	socketAddress: URL | url = TrakitSocketCommander.URI_PROD,
+): UseConnectionResult {
 	/**
 	 * 
 	 */
-	const s = useRef<TrakitSyncCommander>(new TrakitSyncCommander(
-		new RepSelfGet,
-		process.env.NEXT_PUBLIC_TRAKIT_REST_ADDRESS,
-		process.env.NEXT_PUBLIC_TRAKIT_SOCKET_ADDRESS
-	));
+	const s = useRef(new TrakitSyncCommander);
 	/**
 	 * 
 	 */
@@ -55,39 +71,49 @@ export default function useConnection() {
 
 	/**
 	 * 
+	 * @param event
+	 */
+	function handleOnline(event: TrakitEvent) {
+		setOnline((event as TrakitEventSocketState).online);
+	}
+	/**
+	 * 
+	 * @param event
+	 */
+	function handleAccount(event: TrakitEvent) {
+		const { account: a } = event as TrakitEventAccount;
+		setGhostId(
+			a.user?.login && a.expiry > new Date
+				? a.ghostId
+				: undefined
+		);
+		setUser(a.user);
+		setMachine(a.machine);
+	}
+
+	/**
+	 * 
 	 */
 	useEffect(() => {
-		function handleOnline(event: TrakitEvent) {
-			setOnline((event as TrakitEventSocketState).online);
-		}
-		function handleAccount(event: TrakitEvent) {
-			const { account: a } = event as TrakitEventAccount;
-			setGhostId(
-				a.user?.login && a.expiry > new Date
-					? a.ghostId
-					: undefined
-			);
-			setUser(a.user);
-			setMachine(a.machine);
-		}
-
 		s.current.on("open", handleOnline);
 		s.current.on("error", handleOnline);
 		s.current.on("close", handleOnline);
 		s.current.on("account", handleAccount);
+		s.current.restAddress = new URL(restAddress);
+		s.current.socketAddress = new URL(socketAddress);
 		return () => {
 			s.current.off("open", handleOnline);
 			s.current.off("error", handleOnline);
 			s.current.off("close", handleOnline);
 			s.current.off("account", handleAccount);
 			s.current.dispose();
-		}
-	}, []);
+		};
+	}, [restAddress, socketAddress]);
 
 	return {
 		online,
 		initialized,
-		sync: s.current,
+		synchronizer: s.current,
 		ghostId,
 		user,
 		machine,
