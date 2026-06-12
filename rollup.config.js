@@ -49,6 +49,8 @@ export default [
 		external: [
 			'@trakit/objects',
 			'@trakit/commands',
+			'@trakit/sync',
+			'react',
 		],
 	}
 ];
