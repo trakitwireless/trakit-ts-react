@@ -1,6 +1,6 @@
 /**
  * ReactJS library.
- * {@link https://github.com/trakitwireless/trakit-ts-sync|Client synchronization library.}
+ * {@link https://github.com/trakitwireless/trakit-ts-react|ReactJS controls.}
  * Last updated on Thu June 11 2026 15:43:01 
  * @copyright Trak-iT Wireless Inc. 2026
  */
