@@ -1,8 +1,8 @@
-'use client';
-
 import {
+    ErrorCode,
+    ErrorDetail,
     Reply,
-    ReplySync
+    ReplySync,
 } from '@trakit/commands';
 import {
     IBelongCompany,
@@ -10,27 +10,38 @@ import {
     nothing,
     storage,
     SyncName,
-    ulong
+    ulong,
 } from '@trakit/objects';
 import {
     TrakitEvent,
     TrakitEventSocketMessage,
     TrakitEventSync,
-    TrakitSocketCommander
+    TrakitSocketCommander,
 } from '@trakit/sync';
 import {
     useEffect,
     useRef,
-    useState
+    useState,
 } from 'react';
 import useConnection from './useConnection';
 
 /**
- * 
+ * The result of the `useSync` hook.
  */
 export type UseSyncResult<T> = {
-	loading: boolean;
+	/**
+	 * Whether the hook is currently loading data. This will be `true` until the initial synchronization is complete, and may briefly become `true` again if the connection is lost and re-established.
+	 */
+	ready: boolean;
+	/**
+	 * The list of replies received from the synchronization process.
+	 * This is normally not needed, but can be useful for debugging or error handling,
+	 * as it contains the {@link Reply} classes with {@link ErrorCode} and {@link ErrorDetail}.
+	 */
 	replies: Reply[];
+	/**
+	 * The list of synchronized objects of type `T`.
+	 */
 	objects: T[];
 };
 
@@ -38,32 +49,60 @@ export type UseSyncResult<T> = {
  * Subscribes to the given sync types for the current company, returning the
  * live list of synchronized objects and re-rendering the consumer whenever
  * that list changes.
- * @param type The {@link SyncName} to subscribe to.
- * @returns `{ loading, replies, objects }` – typed to whatever `T` is inferred or provided.
+ * @param type		The {@link SyncName} to subscribe to.
+ * @param companyId	Optional company ID to filter the synchronized objects. Default is your own company.
+ * @returns			An object containing the loading state, the list of replies, and the list of synchronized objects.
  */
-export default function useSync<T extends IRequestable & IBelongCompany>(type: SyncName): UseSyncResult<T> {
+export default function useSync<T extends IRequestable & IBelongCompany>(
+	type: SyncName,
+	companyId?: ulong | nothing
+): UseSyncResult<T> {
+	/**
+	 * A reference to the current synchronization command promise.
+	 * This is used to track the ongoing process between mounts and unmounts for any control using this hook.
+	 * Desynchronization is only performed when the last control using this hook unmounts, so that multiple
+	 * controls can use the same synchronization without interrupting each other.
+	 */
 	const cmd = useRef<Promise<Reply[]> | null>(null);
+	/**
+	 * A reference to the number of controls currently using this hook.
+	 * This is used to determine when to desynchronize from the synchronization process,
+	 * which only happens when the last control unmounts.
+	 */
 	const uses = useRef(0);
+	/**
+	 * The {@link Reply|replies} from the commands performing the synchronization,
+	 * which may contain {@link ErrorCode}s.
+	 */
 	const [replies, setReplies] = useState<Reply[] | null>(null);
+	/**
+	 * The list of synchronized objects of type `T` for the given type and company.
+	 * This array is updated whenever a full list is loaded or a single object is updated.
+	 */
 	const [objects, setObjects] = useState<T[] | null>(null);
-	const { synchronizer: sync, initialized, online, user, machine } = useConnection();
-	const companyId = user?.companyId ?? machine?.companyId;
-	let ranEffect = false;
+	// we use the connection hook to send sync commands
+	const { synchronizer, ready, online, user, machine } = useConnection();
+	// populate the companyId with default value if not provided
+	companyId = companyId ?? user?.companyId ?? machine?.companyId;
 
 	useEffect(() => {
-		if (!initialized || !type || isNaN(companyId as number)) return;
+		// if not ready, or no type is provided, or companyId is not a valid number, give up, go home
+		if (!ready || !type || isNaN(companyId as number)) return;
+		// increments the number of uses for this hook, which is used to determine when to desynchronize
 		uses.current++;
 
 		/**
-		 * 
+		 * Synchronizes the resource of the given type and company.
+		 * @param kind The type of the resource to synchronize.
+		 * @param objCompany The company ID of the resource to synchronize.
 		 */
 		function syncResource(kind: SyncName, objCompany: ulong) {
 			if (!(
-				uses.current === 0			// no longer in use
+				uses.current === 0			// no longer in use (all controls unmounted)
 				|| companyId !== objCompany	// wrong company object(s) sync message
 				|| type !== kind			// wrong type of object(s) sync message
 			)) {
-				// sets the obejcts to the current list of objects of the given type and company in storage
+				// sets the objects to the current list of objects of the given type and company in storage
 				// storage is updated in the background by the commander
 				setObjects([
 					...(storage[kind] as Map<unknown, T>)
@@ -73,14 +112,14 @@ export default function useSync<T extends IRequestable & IBelongCompany>(type: S
 			}
 		}
 		/**
-		 * 
+		 * Handles get, list, update, and delete events.
 		 */
 		function handleSync(event: TrakitEvent) {
 			const { kind, companyId } = event as TrakitEventSync;
 			syncResource(kind, companyId);
 		}
 		/**
-		 * 
+		 * Handles synchronization messages by synchronizing the relevant resource.
 		 */
 		function handleMessage(event: TrakitEvent) {
 			const { name, body } = event as TrakitEventSocketMessage;
@@ -90,48 +129,54 @@ export default function useSync<T extends IRequestable & IBelongCompany>(type: S
 			);
 		}
 		/**
-		 * 
+		 * Handles the completion of the synchronization process, cleaning up event listeners and desynchronizing if necessary.
 		 */
 		function handleComplete() {
+			// if this is the last use of the hook
 			if (uses.current === 0) {
+				// desynchronize and clean up event listeners
 				const toDesync = replies?.map(r => (r as ReplySync).syncName).filter(s => !!s);
-				if (toDesync?.length) sync.desync(companyId as ulong, toDesync);
-				sync.off("list", handleSync);
-				sync.off("update", handleSync);
-				sync.off("delete", handleSync);
-				sync.off("message", handleMessage);
+				if (toDesync?.length) synchronizer.desync(companyId as ulong, toDesync);
+				synchronizer.off("list", handleSync);
+				synchronizer.off("update", handleSync);
+				synchronizer.off("delete", handleSync);
+				synchronizer.off("message", handleMessage);
 			}
+			// it's ready, so clear the command reference
 			cmd.current = null;
 		}
 		/**
-		 * 
+		 * Handles the main sync command response.
 		 */
 		function handlePromise(responses: Reply[]) {
 			setReplies(responses);
 			syncResource(type, companyId as ulong);
 		}
 
-		sync.on("list", handleSync);
-		sync.on("update", handleSync);
-		sync.on("delete", handleSync);
-		sync.on("message", handleMessage);
-		cmd.current = sync.sync(companyId as ulong, [type]);
+		// attach event listeners for events, sync messages, and start the synchronizing
+		synchronizer.on("list", handleSync);
+		synchronizer.on("update", handleSync);
+		synchronizer.on("delete", handleSync);
+		synchronizer.on("message", handleMessage);
+		cmd.current = synchronizer.sync(companyId as ulong, [type]);
 		cmd.current.then(handlePromise, handlePromise);
 		cmd.current.finally(handleComplete);
-		ranEffect = true;
 
 		return () => {
+			// decrements the number of uses and desynchronizes if this is the last use
 			uses.current--;
 			if (!cmd.current) {
+				// if command has completed, desynchronize immediately
 				handleComplete();
 			}
 		};
-	}, [initialized, online, companyId, type]);
+	}, [ready, online, companyId, type]);
 
 	return {
-		loading: !ranEffect
-			&& !objects
-			|| !!cmd.current,
+		ready: ready
+			&& online
+			&& !!objects
+			&& !cmd.current,
 		replies: replies ?? [],
 		objects: objects ?? [],
 	};
