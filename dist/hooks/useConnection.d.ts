@@ -7,7 +7,7 @@ export type UseConnectionResult = {
     /**
      * The synchronizer instance used for commands.
      */
-    synchronizer: TrakitSyncCommander;
+    readonly synchronizer: TrakitSyncCommander;
     /**
      * Indicates whether the connection is ready for use.
      * Will be `true` if there is {@link User|user session} or {@link Machine|API credentials}
@@ -18,7 +18,7 @@ export type UseConnectionResult = {
     /**
      * The session ID taken from a login command.
      */
-    ghostId: guid | nothing;
+    ghostId: guid;
     /**
      * Indicates whether the WebSocket connection is currently online.
      */
@@ -26,16 +26,16 @@ export type UseConnectionResult = {
     /**
      * The {@link User} information associated with the current session, if available.
      */
-    user: User | nothing;
+    user: User | null;
     /**
      * The {@link Machine|API credentials} associated with the current session, if available.
      */
-    machine: Machine | nothing;
+    machine: Machine | null;
 };
 /**
- * A React hook that manages the connection to the Trakit synchronization service.
+ * A React hook that manages the connection to the Trak-iT synchronization service.
  * It initializes the synchronizer, listens for connection and account events,
  * and provides the current connection state and user/machine information.
  */
-export default function useConnection(restAddress?: URL | url, socketAddress?: URL | url): UseConnectionResult;
+export default function useConnection(restAddress?: URL | url | nothing, socketAddress?: URL | url | nothing): UseConnectionResult;
 //# sourceMappingURL=useConnection.d.ts.map
