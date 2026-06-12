@@ -20,9 +20,6 @@
 		"strictNullChecks": true,
 		"skipLibCheck": true,
 		"paths": {
-			"@/*": [
-				"./*"
-			],
 			"@trakit/sync": [
 				"../trakit-ts-sync/dist/index.d.ts",
 				//"../trakit-ts-sync/src/index.ts",

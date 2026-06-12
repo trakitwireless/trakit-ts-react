@@ -1,15 +1,11 @@
-import typescript from 'rollup-plugin-typescript2';
 import terser from '@rollup/plugin-terser';
-//import json from '@rollup/plugin-json';
+import typescript from 'rollup-plugin-typescript2';
 
 const obfuscate = {
 	ecma: 2020,
-	// sourceMap: {
-	//   filename: 'dist/trakit-sync-worker.min.js',
-	// },
 	compress: {
-		drop_console: !true,
-		drop_debugger: !true,
+		drop_console: true,
+		drop_debugger: true,
 		hoist_funs: true,
 		module: true,
 		toplevel: true,
@@ -18,10 +14,7 @@ const obfuscate = {
 		properties: {
 			regex: /^[#_]/,
 		}
-	}
-	//format: {
-	//	semicolons: false,
-	//},
+	},
 };
 
 export default [
@@ -29,7 +22,7 @@ export default [
 		input: './src/index.ts',
 		output: [
 			{
-				file: 'dist/trakit-sync.min.js',
+				file: 'dist/trakit-react.min.js',
 				format: 'es',
 				exports: 'named',
 				plugins: [terser(obfuscate)]
