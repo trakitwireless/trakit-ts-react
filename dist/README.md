@@ -4,16 +4,24 @@ This library contains ReactJS controls, hooks, and contexts to assist in working
 
 ### Prerequisites
 
-The `@trakit/objects` and `@trakit/commands` packages are required since they contain the definitions for all the commands required to manipulate the objects.
+The `@trakit/objects`, `@trakit/commands` and `@trakit/sync` packages are required since they contain the definitions for all the commands required to manipulate the objects.
 
-In order to build this project, you need to install the RollupJS, and plugins for TypeScript and Minifying.
+In order to build this project, you need to install the ReactJS types, RollupJS, and plugins for TypeScript and Minifying.
 ```
-npm i rollup rollup-plugin-typescript2 @rollup/plugin-terser
+npm i @types/react rollup rollup-plugin-typescript2 @rollup/plugin-terser
 ```
 After those have been installed, build the project normally.
 ```
 rollup --config rollup.config.js
 ```
+
+### `useConnection` hook
+
+Used as the main hook for keeping a persistent connection.
+
+### `useSync` hook
+
+Used to synchronize the specified type(s) of objects with the system.  Internally, this hook uses `useConnection`.
 
 ## Questions and Feedback
 

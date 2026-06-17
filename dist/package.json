@@ -1,7 +1,7 @@
 {
   "name": "@trakit/react",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./trakit-react.min.js",
   "types": "./index.d.ts",
   "scripts": {
@@ -26,7 +26,7 @@
     "url": "https://github.com/trakitwireless/trakit-ts-react/issues"
   },
   "homepage": "https://github.com/trakitwireless/trakit-ts-react#readme",
-  "description": "Trak-iT uses these object definitions to interact with all our APIs.",
+  "description": "ReactJS controls, hooks, and contexts to assist in working with Trak-iT's APIs.",
   "devDependencies": {
     "@rollup/plugin-terser": "^1.0.0",
     "rollup": "^4.35.0",
@@ -37,7 +37,8 @@
   "dependencies": {
     "@trakit/commands": "^0.1.2",
     "@trakit/objects": "^0.1.2",
-    "@trakit/sync": "^0.1.1",
-    "@types/react": "^19.2.17"
+    "@trakit/sync": "^0.1.2",
+    "@types/react": "^19.2.17",
+    "react-cookie": "^8.1.2"
   }
 }
