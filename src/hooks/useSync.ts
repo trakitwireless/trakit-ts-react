@@ -38,7 +38,7 @@ export type UseSyncResult<T> = {
 	 * This is normally not needed, but can be useful for debugging or error handling,
 	 * as it contains the {@link Reply} classes with {@link ErrorCode} and {@link ErrorDetail}.
 	 */
-	reply: Reply | null;
+	replies: Reply[] | null;
 	/**
 	 * The list of synchronized objects of type `T`.
 	 */
@@ -74,7 +74,7 @@ export default function useSync<T extends IRequestable & IBelongCompany>(
 	 * The {@link Reply|replies} from the commands performing the synchronization,
 	 * which may contain {@link ErrorCode}s.
 	 */
-	const [reply, setReply] = useState<Reply | nothing>();
+	const [replies, setReplies] = useState<Reply[] | nothing>();
 	/**
 	 * The list of synchronized objects of type `T` for the given type and company.
 	 * This array is updated whenever a full list is loaded or a single object is updated.
@@ -135,8 +135,8 @@ export default function useSync<T extends IRequestable & IBelongCompany>(
 			// if this is the last use of the hook
 			if (uses.current === 0) {
 				// desynchronize and clean up event listeners
-				const desync = (reply as ReplySync)?.syncName;
-				if (desync) synchronizer.desync(companyId as ulong, [desync]);
+				const desync = replies?.map(r => (r as ReplySync).syncName).filter(s => !!s);
+				if (desync?.length) synchronizer.desync(companyId as ulong, desync);
 				synchronizer.off("list", handleSync);
 				synchronizer.off("update", handleSync);
 				synchronizer.off("delete", handleSync);
@@ -149,7 +149,7 @@ export default function useSync<T extends IRequestable & IBelongCompany>(
 		 * Handles the main sync command response.
 		 */
 		function handlePromise(responses: Reply[]) {
-			setReply(responses[0] ?? null);
+			setReplies(responses ?? null);
 			syncResource(type, companyId as ulong);
 		}
 
@@ -177,7 +177,7 @@ export default function useSync<T extends IRequestable & IBelongCompany>(
 			&& online
 			&& !!objects
 			&& !cmd.current,
-		reply: reply || null,
+		replies: replies || null,
 		objects: objects ?? [],
 	};
 }
