@@ -5,11 +5,19 @@
  * @copyright Trak-iT Wireless Inc. 2026
  */
 
-import { UseSyncMultiple, UseSyncResult, UseSyncSingle } from "./constants/SyncResult";
-import useConnection, { UseConnectionResult } from "./hooks/useConnection";
+import
+useConnection,
+{
+	UseConnectionResult,
+} from "./hooks/useConnection";
 import useIsOnline from "./hooks/useIsOnline";
-import useSync from "./hooks/useSync";
-import useSyncs from "./hooks/useSyncs";
+import {
+    useSingle,
+    useSync,
+    UseSyncMultiple,
+    UseSyncResult,
+    UseSyncSingle,
+} from "./hooks/useSync";
 
 /**
  * Version number for this release.
@@ -22,10 +30,10 @@ export const version = '0.0.2';
 export {
     useConnection,
     useIsOnline,
+    useSingle,
     useSync,
-    useSyncs,
     type UseConnectionResult,
-    type UseSyncResult,
     type UseSyncMultiple,
-    type UseSyncSingle,
-};
+    type UseSyncResult,
+    type UseSyncSingle
+}
