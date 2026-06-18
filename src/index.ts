@@ -8,6 +8,7 @@
 import useConnection, { UseConnectionResult } from "./hooks/useConnection";
 import useIsOnline from "./hooks/useIsOnline";
 import useSync, { UseSyncResult } from "./hooks/useSync";
+import useSyncs from "./hooks/useSyncs";
 
 /**
  * Version number for this release.
@@ -21,6 +22,7 @@ export {
     useConnection,
     useIsOnline,
     useSync,
+    useSyncs,
     type UseConnectionResult,
     type UseSyncResult
 };
