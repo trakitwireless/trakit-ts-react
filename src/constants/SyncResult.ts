@@ -28,7 +28,7 @@ export interface UseSyncResult {
 /**
  * The result of the `useSync` hook.
  */
-export type UseSyncMultiple<T extends IRequestable & IBelongCompany> = UseSyncResult & {
+export type UseSyncMultiple<T extends (IRequestable & IBelongCompany)> = UseSyncResult & {
 	/**
 	 * The list of synchronized objects of type `T`.
 	 */
@@ -37,7 +37,7 @@ export type UseSyncMultiple<T extends IRequestable & IBelongCompany> = UseSyncRe
 /**
  * The result of the `useSync` hook.
  */
-export type UseSyncSingle<T extends IRequestable & IBelongCompany> = UseSyncResult & {
+export type UseSyncSingle<T extends (IRequestable & IBelongCompany)> = UseSyncResult & {
 	/**
 	 * The list of synchronized objects of type `T`.
 	 */
