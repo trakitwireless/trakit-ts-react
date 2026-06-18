@@ -25,11 +25,12 @@ import {
 import useConnection from './useConnection';
 
 /**
- * The result of the `useSync` hook.
+ * The result of the `useSync` hook and `useSingle` hook.
  */
 export interface UseSyncResult {
 	/**
-	 * Whether the hook is currently loading data. This will be `true` until the initial synchronization is complete, and may briefly become `true` again if the connection is lost and re-established.
+	 * Whether the hook is currently loading data. This will be `true` until the initial synchronization
+	 * is complete, and may briefly become `true` again if the connection is lost and re-established.
 	 */
 	ready: boolean;
 	/**
@@ -41,30 +42,33 @@ export interface UseSyncResult {
 }
 /**
  * The result of the `useSync` hook.
+ * This object behaves like a dictionary, where the {@link UseSyncResult} properties are combined with
+ * the synchronized objects of type `T` for each requested types.
  */
-export type UseSyncMultiple<T extends (IRequestable & IBelongCompany)> = UseSyncResult & {
+export type UseSyncMultiple<T extends IRequestable & IBelongCompany> = UseSyncResult & {
 	/**
-	 * The list of synchronized objects of type `T`.
+	 * The list of synchronized objects of each requested type `T`.
 	 */
 	[key in SyncName]?: T[] | nothing;
 }
 /**
- * The result of the `useSync` hook.
+ * The result of the `useSingle` hook.
+ * This is a combination of the {@link UseSyncResult} and the synchronized objects of type `T`
+ * for the given type, which are stored in an array.
  */
-export type UseSyncSingle<T extends (IRequestable & IBelongCompany)> = UseSyncResult & {
+export type UseSyncSingle<T extends IRequestable & IBelongCompany> = UseSyncResult & {
 	/**
-	 * The list of synchronized objects of type `T`.
+	 * The list of synchronized objects of the requested type.
 	 */
 	objects: T[] | nothing;
 }
 
 /**
- * Subscribes to the given sync types for the current company, returning the
- * live list of synchronized objects and re-rendering the consumer whenever
- * that list changes.
+ * Subscribes to the given sync types for the given company, returning the live list of synchronized
+ * objects and re-rendering whenever any object, or part of that list changes.
  * @param types		The {@link SyncName} array to subscribe to.
  * @param companyId	Optional company ID to filter the synchronized objects. Default is your own company.
- * @returns			An object containing the loading state, the list of replies, and the list of synchronized objects.
+ * @returns			An object containing the loading state, the list of replies, and the list(s) of synchronized objects.
  */
 export function useSync<T extends IRequestable & IBelongCompany>(
 	types: SyncName[],
@@ -95,8 +99,10 @@ export function useSync<T extends IRequestable & IBelongCompany>(
 	const [dictionary, setDictionary] = useState<{ [key in SyncName]?: T[] | nothing }>({});
 	// we use the connection hook to send sync commands
 	const { synchronizer, ready, online, user, machine } = useConnection();
-	// populate the companyId with default value if not provided
-	companyId = companyId ?? user?.companyId ?? machine?.companyId;
+	// populate the companyId with the session's company if not provided
+	companyId = companyId
+			?? user?.companyId
+			?? machine?.companyId;
 
 	useEffect(() => {
 		// if not ready, or no type is provided, or companyId is not a valid number, give up, go home
@@ -199,9 +205,8 @@ export function useSync<T extends IRequestable & IBelongCompany>(
 }
 
 /**
- * Subscribes to the given sync types for the current company, returning the
- * live list of synchronized objects and re-rendering the consumer whenever
- * that list changes.
+ * Subscribes to the given sync type for the given company, returning the live list of synchronized
+ * objects and re-rendering whenever any object, or part of that list changes.
  * @param type		The {@link SyncName} to subscribe to.
  * @param companyId	Optional company ID to filter the synchronized objects. Default is your own company.
  * @returns			An object containing the loading state, the list of replies, and the list of synchronized objects.
@@ -213,7 +218,7 @@ export function useSingle<T extends IRequestable & IBelongCompany>(
 	/**
 	 * 
 	 */
-	const { ready, replies, [type]: objects } = useSyncs([type], companyId);
+	const { ready, replies, [type]: objects } = useSync([type], companyId);
 
 	return {
 		ready: ready,
