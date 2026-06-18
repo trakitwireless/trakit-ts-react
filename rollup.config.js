@@ -44,6 +44,7 @@ export default [
 			'@trakit/commands',
 			'@trakit/sync',
 			'react',
+			'react-cookie',
 		],
 	}
 ];
