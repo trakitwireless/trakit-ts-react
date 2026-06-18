@@ -8,7 +8,7 @@ export interface UseSyncResult {
      * Whether the hook is currently loading data. This will be `true` until the initial synchronization
      * is complete, and may briefly become `true` again if the connection is lost and re-established.
      */
-    ready: boolean;
+    loading: boolean;
     /**
      * The list of replies received from the synchronization process.
      * This is normally not needed, but can be useful for debugging or error handling,
