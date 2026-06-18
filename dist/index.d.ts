@@ -6,13 +6,13 @@
  */
 import useConnection, { UseConnectionResult } from "./hooks/useConnection";
 import useIsOnline from "./hooks/useIsOnline";
-import useSync, { UseSyncResult } from "./hooks/useSync";
+import { useSingle, useSync, UseSyncMultiple, UseSyncResult, UseSyncSingle } from "./hooks/useSync";
 /**
  * Version number for this release.
  */
-export declare const version = "0.0.2";
+export declare const version = "0.0.3";
 /**
  * Hooks
  */
-export { useConnection, useIsOnline, useSync, type UseConnectionResult, type UseSyncResult };
+export { useConnection, useIsOnline, useSingle, useSync, type UseConnectionResult, type UseSyncMultiple, type UseSyncResult, type UseSyncSingle };
 //# sourceMappingURL=index.d.ts.map
