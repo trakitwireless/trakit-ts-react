@@ -5,10 +5,9 @@
  * @copyright Trak-iT Wireless Inc. 2026
  */
 
-import
-useConnection,
-{
-	UseConnectionResult,
+import {
+    useConnection,
+    UseConnectionResult,
 } from "./hooks/useConnection";
 import useIsOnline from "./hooks/useIsOnline";
 import {
@@ -22,7 +21,7 @@ import {
 /**
  * Version number for this release.
  */
-export const version = '0.0.3';
+export const version = '0.0.4';
 
 /**
  * Hooks
@@ -36,4 +35,4 @@ export {
     type UseSyncMultiple,
     type UseSyncResult,
     type UseSyncSingle
-}
+};
