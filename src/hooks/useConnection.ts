@@ -1,4 +1,3 @@
-import { RepSelfGet } from '@trakit/commands';
 import {
     guid,
     Machine,
@@ -14,7 +13,11 @@ import {
     TrakitSocketCommander,
     TrakitSyncCommander,
 } from '@trakit/sync';
-import { useEffect, useRef, useState } from 'react';
+import {
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { useCookies } from 'react-cookie';
 import { CookieSetOptions } from 'universal-cookie';
 
@@ -27,12 +30,12 @@ const SESSION_ID = "ghostId";
  * Name of the machine key cookie.
  * This cookie is used to persist the machine's key across page reloads and browser restarts.
  */
-const MACHINE_KEY = "apiKey";
+const MACHINE_KEY = "aK";
 /**
  * Name of the machine secret cookie.
  * This cookie is used to persist the machine's secret across page reloads and browser restarts.
  */
-const MACHINE_SECRET = "apiSec";
+const MACHINE_SECRET = "aS";
 /**
  * Default options for setting cookies.
  * These options ensure that cookies are only accessible via the client-side and are secure.
