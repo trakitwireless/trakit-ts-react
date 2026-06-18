@@ -86,7 +86,7 @@ export type UseConnectionResult = {
  * It initializes the synchronizer, listens for connection and account events,
  * and provides the current connection state and user/machine information.
  */
-export default function useConnection(
+export function useConnection(
 	restAddress?: URL | url | nothing,
 	socketAddress?: URL | url | nothing,
 ): UseConnectionResult {

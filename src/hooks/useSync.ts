@@ -22,7 +22,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import useConnection from './useConnection';
+import { useConnection } from './useConnection';
 
 /**
  * The result of the `useSync` hook and `useSingle` hook.
@@ -32,7 +32,7 @@ export interface UseSyncResult {
 	 * Whether the hook is currently loading data. This will be `true` until the initial synchronization
 	 * is complete, and may briefly become `true` again if the connection is lost and re-established.
 	 */
-	ready: boolean;
+	loading: boolean;
 	/**
 	 * The list of replies received from the synchronization process.
 	 * This is normally not needed, but can be useful for debugging or error handling,
@@ -195,10 +195,10 @@ export function useSync<T extends IRequestable & IBelongCompany>(
 	}, [companyId, types.sort().join(",")]);
 
 	return {
-		ready: ready
-			&& online
-			&& !!Object.keys(dictionary).length
-			&& !cmd.current,
+		loading: !ready
+			|| !online
+			|| !Object.keys(dictionary).length
+			|| !!cmd.current,
 		replies: replies ?? [],
 		...dictionary,
 	};
@@ -218,10 +218,10 @@ export function useSingle<T extends IRequestable & IBelongCompany>(
 	/**
 	 * 
 	 */
-	const { ready, replies, [type]: objects } = useSync([type], companyId);
+	const { loading, replies, [type]: objects } = useSync([type], companyId);
 
 	return {
-		ready: ready,
+		loading: loading,
 		replies: replies,
 		objects: (objects ?? []) as T[],
 	};
