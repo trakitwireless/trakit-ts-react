@@ -5,9 +5,10 @@
  * @copyright Trak-iT Wireless Inc. 2026
  */
 
+import { UseSyncMultiple, UseSyncResult, UseSyncSingle } from "./constants/SyncResult";
 import useConnection, { UseConnectionResult } from "./hooks/useConnection";
 import useIsOnline from "./hooks/useIsOnline";
-import useSync, { UseSyncResult } from "./hooks/useSync";
+import useSync from "./hooks/useSync";
 import useSyncs from "./hooks/useSyncs";
 
 /**
@@ -24,5 +25,7 @@ export {
     useSync,
     useSyncs,
     type UseConnectionResult,
-    type UseSyncResult
+    type UseSyncResult,
+    type UseSyncMultiple,
+    type UseSyncSingle,
 };

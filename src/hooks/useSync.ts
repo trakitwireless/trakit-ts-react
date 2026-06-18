@@ -1,8 +1,7 @@
 import {
     ErrorCode,
-    ErrorDetail,
     Reply,
-    ReplySync,
+    ReplySync
 } from '@trakit/commands';
 import {
     IBelongCompany,
@@ -23,27 +22,8 @@ import {
     useRef,
     useState,
 } from 'react';
+import { UseSyncSingle } from '../constants/SyncResult';
 import useConnection from './useConnection';
-
-/**
- * The result of the `useSync` hook.
- */
-export type UseSyncResult<T> = {
-	/**
-	 * Whether the hook is currently loading data. This will be `true` until the initial synchronization is complete, and may briefly become `true` again if the connection is lost and re-established.
-	 */
-	ready: boolean;
-	/**
-	 * The list of replies received from the synchronization process.
-	 * This is normally not needed, but can be useful for debugging or error handling,
-	 * as it contains the {@link Reply} classes with {@link ErrorCode} and {@link ErrorDetail}.
-	 */
-	replies: Reply[] | null;
-	/**
-	 * The list of synchronized objects of type `T`.
-	 */
-	objects: T[];
-};
 
 /**
  * Subscribes to the given sync types for the current company, returning the
@@ -56,7 +36,7 @@ export type UseSyncResult<T> = {
 export default function useSync<T extends IRequestable & IBelongCompany>(
 	type: SyncName,
 	companyId?: ulong | nothing
-): UseSyncResult<T> {
+): UseSyncSingle<T> {
 	/**
 	 * A reference to the current synchronization command promise.
 	 * This is used to track the ongoing process between mounts and unmounts for any control using this hook.

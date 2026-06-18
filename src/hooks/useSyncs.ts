@@ -1,8 +1,7 @@
 import {
     ErrorCode,
-    ErrorDetail,
     Reply,
-    ReplySync,
+    ReplySync
 } from '@trakit/commands';
 import {
     IBelongCompany,
@@ -23,6 +22,7 @@ import {
     useRef,
     useState,
 } from 'react';
+import { UseSyncMultiple } from '../constants/SyncResult';
 import useConnection from './useConnection';
 
 /**
@@ -36,7 +36,7 @@ import useConnection from './useConnection';
 export default function useSyncs<T extends IRequestable & IBelongCompany>(
 	types: SyncName[],
 	companyId?: ulong | nothing
-) {
+): UseSyncMultiple<T> {
 	/**
 	 * A reference to the current synchronization command promise.
 	 * This is used to track the ongoing process between mounts and unmounts for any control using this hook.
@@ -59,7 +59,7 @@ export default function useSyncs<T extends IRequestable & IBelongCompany>(
 	 * The list of synchronized objects of type `T` for the given type and company.
 	 * This array is updated whenever a full list is loaded or a single object is updated.
 	 */
-	const [dictionary, setDictionary] = useState<{ [key in SyncName]?: T[] }>({});
+	const [dictionary, setDictionary] = useState<{ [key in SyncName]?: T[] | nothing }>({});
 	// we use the connection hook to send sync commands
 	const { synchronizer, ready, online, user, machine } = useConnection();
 	// populate the companyId with default value if not provided
