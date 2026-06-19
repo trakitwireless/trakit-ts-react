@@ -17,6 +17,7 @@ import {
     UseSyncResult,
     UseSyncSingle,
 } from "./hooks/useSync";
+//import { ConnectionProvider } from "./providers/ConnectionProvider";
 
 /**
  * Version number for this release.
@@ -36,3 +37,10 @@ export {
     type UseSyncResult,
     type UseSyncSingle
 };
+
+///**
+// * Providers
+// */
+//export {
+//    ConnectionProvider,
+//};

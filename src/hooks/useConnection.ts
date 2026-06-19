@@ -129,7 +129,7 @@ export function useConnection(
 	/**
 	 * Indicates whether the connection is ready for use.
 	 */
-	const ready = online === !!(ghostId || machine);
+	const ready = !!(ghostId || machine) === !!(s.current.account.user || s.current.account.machine);
 
 	/**
 	 * Handles online/offline events from the WebSocket connection.
@@ -187,7 +187,6 @@ export function useConnection(
 				machine: machine?.toJSON(),
 			});
 		}
-		return () => s.current.dispose();
 	}, []);
 
 	return {
