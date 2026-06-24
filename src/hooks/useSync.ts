@@ -22,7 +22,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useConnection } from './useConnection';
+import { useConnection } from '../context/connectionContext';
 
 /**
  * The result of the `useSync` hook and `useSingle` hook.
