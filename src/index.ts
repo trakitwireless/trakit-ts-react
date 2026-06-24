@@ -6,9 +6,10 @@
  */
 
 import {
+    ConnectionProvider,
     useConnection,
-    UseConnectionResult,
-} from "./hooks/useConnection";
+    type ConnectionContextType,
+} from "./context/connectionContext";
 import useIsOnline from "./hooks/useIsOnline";
 import {
     useSingle,
@@ -17,7 +18,6 @@ import {
     UseSyncResult,
     UseSyncSingle,
 } from "./hooks/useSync";
-//import { ConnectionProvider } from "./providers/ConnectionProvider";
 
 /**
  * Version number for this release.
@@ -32,15 +32,15 @@ export {
     useIsOnline,
     useSingle,
     useSync,
-    type UseConnectionResult,
     type UseSyncMultiple,
     type UseSyncResult,
-    type UseSyncSingle
+    type UseSyncSingle,
 };
 
-///**
-// * Providers
-// */
-//export {
-//    ConnectionProvider,
-//};
+/**
+ * Context provider for connection state and synchronizer instance.
+ */
+export {
+	ConnectionProvider,
+	type ConnectionContextType,
+};

@@ -13,6 +13,7 @@
 		"isolatedModules": true,
 		"outDir": "./dist", // Output directory
 		"sourceMap": true,
+		"jsx": "react-jsx",
 		"strict": true,
 		"noImplicitAny": true,
 		"noImplicitOverride": true,
