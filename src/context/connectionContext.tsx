@@ -116,6 +116,32 @@ export function ConnectionProvider({
 	restAddress?: URL | url | nothing;
 	socketAddress?: URL | url | nothing;
 }) {
+	return (
+		<CookiesProvider>
+			<ConnectionProviderInner
+				restAddress={restAddress}
+				socketAddress={socketAddress}
+			>
+				{children}
+			</ConnectionProviderInner>
+		</CookiesProvider>
+	);
+}
+/**
+ * Inner provider component that manages the connection state and synchronizer instance.
+ * This component is used internally by the `ConnectionProvider` and should not be used directly.
+ * It initializes the synchronizer, listens for connection and account events,
+ * and provides the current connection state and user/machine information.
+ */
+function ConnectionProviderInner({
+	children,
+	restAddress,
+	socketAddress,
+}: {
+	children: ReactNode;
+	restAddress?: URL | url | nothing;
+	socketAddress?: URL | url | nothing;
+}) {
 	/**
 	 * The synchronizer instance used for commands.
 	 */
@@ -216,18 +242,16 @@ export function ConnectionProvider({
 	}, []);
 
 	return (
-		<CookiesProvider>
-			<ConnectionContext value={{
-				synchronizer: s.current,
-				ready,
-				ghostId,
-				online,
-				user,
-				machine,
-			}}>
-				{children}
-			</ConnectionContext>
-		</CookiesProvider>
+		<ConnectionContext value={{
+			synchronizer: s.current,
+			ready,
+			ghostId,
+			online,
+			user,
+			machine,
+		}}>
+			{children}
+		</ConnectionContext>
 	);
 }
 
