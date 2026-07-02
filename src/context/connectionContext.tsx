@@ -116,6 +116,10 @@ export function ConnectionProvider({
 	restAddress?: URL | url | nothing;
 	socketAddress?: URL | url | nothing;
 }) {
+	//console.log("ConnectionProvider", {
+	//	restAddress,
+	//	socketAddress,
+	//});
 	return (
 		<CookiesProvider>
 			<ConnectionProviderInner
@@ -182,6 +186,14 @@ function ConnectionProviderInner({
 	 * Indicates whether the connection is ready for use.
 	 */
 	const ready = !!(ghostId || machine) === !!(s.current.account.user || s.current.account.machine);
+
+	//console.log("ConnectionInner", {
+	//	ready,
+	//	online,
+	//	ghostId,
+	//	machine,
+	//	user
+	//});
 
 	/**
 	 * Handles online/offline events from the WebSocket connection.
