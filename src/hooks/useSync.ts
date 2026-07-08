@@ -180,7 +180,8 @@ export function useSync<T extends IRequestable & IBelongCompany>(
 		synchronizer.on("update", handleSync);
 		synchronizer.on("delete", handleSync);
 		synchronizer.on("message", handleMessage);
-		cmd.current = synchronizer.sync(companyId as ulong, types);
+		cmd.current = cmd.current
+					|| synchronizer.sync(companyId as ulong, types);
 		cmd.current.then(handlePromise, handlePromise);
 		cmd.current.finally(handleComplete);
 
@@ -197,7 +198,7 @@ export function useSync<T extends IRequestable & IBelongCompany>(
 	return {
 		loading: !ready
 			|| !online
-			|| !Object.keys(dictionary).length
+			|| !replies	// no replies, not empty
 			|| !!cmd.current,
 		replies: replies ?? [],
 		...dictionary,
