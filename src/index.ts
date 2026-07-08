@@ -22,7 +22,7 @@ import {
 /**
  * Version number for this release.
  */
-export const version = '0.0.7';
+export const version = '0.0.8';
 
 /**
  * Hooks
