@@ -33,7 +33,7 @@ export type UseSyncSingle<T extends IRequestable & IBelongCompany> = UseSyncResu
     /**
      * The list of synchronized objects of the requested type.
      */
-    objects: T[] | nothing;
+    objects: T[];
 };
 /**
  * Subscribes to the given sync types for the given company, returning the live list of synchronized
