@@ -5,18 +5,19 @@
  * @copyright Trak-iT Wireless Inc. 2026
  */
 import { ConnectionProvider, useConnection, type ConnectionContextType } from "./context/connectionContext";
+import { useAudit } from "./hooks/useAudit";
 import useIsOnline from "./hooks/useIsOnline";
 import { useSingle, useSync, UseSyncMultiple, UseSyncResult, UseSyncSingle } from "./hooks/useSync";
 /**
  * Version number for this release.
  */
-export declare const version = "0.0.9";
+export declare const version = "0.0.11";
 /**
  * Hooks
  */
-export { useConnection, useIsOnline, useSingle, useSync, type UseSyncMultiple, type UseSyncResult, type UseSyncSingle, };
+export { useAudit, useConnection, useIsOnline, useSingle, useSync, type UseSyncMultiple, type UseSyncResult, type UseSyncSingle };
 /**
  * Context provider for connection state and synchronizer instance.
  */
-export { ConnectionProvider, type ConnectionContextType, };
+export { ConnectionProvider, type ConnectionContextType };
 //# sourceMappingURL=index.d.ts.map
