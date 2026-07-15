@@ -23,10 +23,10 @@ import {
  */
 export function useAudit(
 	account?: RepSelfGet | { machine: { key: string } }
-			| Machine | { key: string }
-			| { ghostId: guid }
-			| guid
-			| nothing,
+		| Machine | { key: string }
+		| { ghostId: guid }
+		| guid
+		| nothing,
 	baseAddress?: URL | url | nothing
 ) {
 	/**
@@ -45,16 +45,17 @@ export function useAudit(
 	useEffect(
 		() => a.current.setAuth(account),
 		[
-			(account as RepSelfGet)?.user?.login
-			?? (account as { machine?: { key: string } })?.machine?.key	// also matches RepSelfGet
-			?? (account as { key: string })?.key
-			?? account
-			?? null
+			(account as RepSelfGet)?.machine?.key
+			|| (account as RepSelfGet)?.user?.login
+			|| (account as { key: string })?.key
+			|| (account as { ghostId: guid })?.ghostId
+			|| account
+			|| null
 		]
 	);
 
 	return {
-		audit: a.current,
+		auditor: a.current,
 		ready,
 	};
 }

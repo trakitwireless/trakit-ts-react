@@ -10,6 +10,7 @@ import {
     useConnection,
     type ConnectionContextType,
 } from "./context/connectionContext";
+import { useAudit } from "./hooks/useAudit";
 import useIsOnline from "./hooks/useIsOnline";
 import {
     useSingle,
@@ -22,19 +23,20 @@ import {
 /**
  * Version number for this release.
  */
-export const version = '0.0.9';
+export const version = '0.0.10';
 
 /**
  * Hooks
  */
 export {
-    useConnection,
-    useIsOnline,
-    useSingle,
-    useSync,
-    type UseSyncMultiple,
-    type UseSyncResult,
-    type UseSyncSingle,
+	useAudit,
+	useConnection,
+	useIsOnline,
+	useSingle,
+	useSync,
+	type UseSyncMultiple,
+	type UseSyncResult,
+	type UseSyncSingle
 };
 
 /**
@@ -42,5 +44,5 @@ export {
  */
 export {
 	ConnectionProvider,
-	type ConnectionContextType,
+	type ConnectionContextType
 };
