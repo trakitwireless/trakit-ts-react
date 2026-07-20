@@ -1,16 +1,20 @@
 import { guid, Machine, nothing, url, User } from '@trakit/objects';
-import { TrakitSyncCommander } from '@trakit/sync';
+import { TrakitAuditCommander, TrakitSyncCommander } from '@trakit/sync';
 import { ReactNode } from 'react';
 /**
  * The result of the `useConnection` hook, providing the synchronizer instance and connection state.
  */
-export type ConnectionContextType = {
+export type ApiContextType = {
     /**
      * The synchronizer instance used for commands.
      */
     readonly synchronizer: TrakitSyncCommander;
     /**
-     * Indicates whether the connection is ready for use.
+     * The auditor instance used for history.
+     */
+    readonly auditor: TrakitAuditCommander;
+    /**
+     * Indicates whether the APIs are ready for use.
      * Will be `true` if there is {@link User|user session} or {@link Machine|API credentials}
      * available and the underlying WebSocket connection has been established,
      * or if there is no authentication details given.
@@ -35,30 +39,31 @@ export type ConnectionContextType = {
 };
 /**
  * Provider component that wraps the application with CookiesProvider.
- * Required for the `useConnection` hook to work properly.
+ * Required for the `useApi` hook to work properly.
  *
  * @example
  * ```tsx
- * import { ConnectionProvider, useConnection } from '@trakit/react';
+ * import { ApiProvider, useApi } from '@trakit/react';
  *
  * function App() {
  *   return (
- *     <ConnectionProvider>
+ *     <ApiProvider>
  *       <YourComponent />
- *     </ConnectionProvider>
+ *     </ApiProvider>
  *   );
  * }
  * ```
  */
-export declare function ConnectionProvider({ children, restAddress, socketAddress }: {
+export declare function ApiProvider({ children, restAddress, socketAddress, auditAddress, }: {
     children: ReactNode;
     restAddress?: URL | url | nothing;
     socketAddress?: URL | url | nothing;
+    auditAddress?: URL | url | nothing;
 }): import("react").JSX.Element;
 /**
- * A React hook that manages the connection to the Trak-iT synchronization service.
+ * A React hook that manages the connection to the Trak-iT synchronization service and APIs.
  * It initializes the synchronizer, listens for connection and account events,
- * and provides the current connection state and user/machine information.
+ * and provides the current connection state, API instances, and user/machine information.
  */
-export declare function useConnection(): ConnectionContextType;
-//# sourceMappingURL=connectionContext.d.ts.map
+export declare function useApi(): ApiContextType;
+//# sourceMappingURL=apiContext.d.ts.map
