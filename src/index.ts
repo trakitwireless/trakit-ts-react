@@ -10,7 +10,6 @@ import {
     useApi,
     type ApiContextType,
 } from "./context/apiContext";
-import { useAudit } from "./hooks/useAudit";
 import useIsOnline from "./hooks/useIsOnline";
 import {
     useSingle,
@@ -29,8 +28,7 @@ export const version = '0.0.11';
  * Hooks
  */
 export {
-	useAudit,
-	useApi as useConnection,
+	useApi,
 	useIsOnline,
 	useSingle,
 	useSync,
@@ -40,9 +38,9 @@ export {
 };
 
 /**
- * Context provider for connection state and synchronizer instance.
+ * Context provider for connection state and API instances.
  */
 export {
-	ApiProvider as ConnectionProvider,
-	type ApiContextType as ConnectionContextType
+	ApiProvider,
+	type ApiContextType
 };
