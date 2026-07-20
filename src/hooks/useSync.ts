@@ -22,7 +22,7 @@ import {
     useRef,
     useState,
 } from 'react';
-import { useConnection } from '../context/connectionContext';
+import { useApi } from '../context/apiContext';
 
 /**
  * The result of the `useSync` hook and `useSingle` hook.
@@ -98,7 +98,7 @@ export function useSync<T extends IRequestable & IBelongCompany>(
 	 */
 	const [dictionary, setDictionary] = useState<{ [key in SyncName]?: T[] | nothing }>({});
 	// we use the connection hook to send sync commands
-	const { synchronizer, ready, online, user, machine } = useConnection();
+	const { synchronizer, ready, online, user, machine } = useApi();
 	// populate the companyId with the session's company if not provided
 	companyId = companyId
 			?? user?.companyId

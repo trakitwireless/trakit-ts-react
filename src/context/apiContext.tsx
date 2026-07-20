@@ -1,4 +1,7 @@
 import {
+    RepSelfGet,
+} from '@trakit/commands';
+import {
     guid,
     Machine,
     nothing,
@@ -6,9 +9,14 @@ import {
     User,
 } from '@trakit/objects';
 import {
+    TrakitAuditCommander,
     TrakitEvent,
     TrakitEventAccount,
     TrakitEventSocketState,
+    //TrakitHostingCommander,
+    //TrakitImageCommander,
+    //TrakitModemCommander,
+    //TrakitReportCommander,
     TrakitRestfulCommander,
     TrakitSocketCommander,
     TrakitSyncCommander,
@@ -53,13 +61,34 @@ const COOKIE_OPTIONS: CookieSetOptions = {
 /**
  * The result of the `useConnection` hook, providing the synchronizer instance and connection state.
  */
-export type ConnectionContextType = {
+export type ApiContextType = {
 	/**
 	 * The synchronizer instance used for commands.
 	 */
 	readonly synchronizer: TrakitSyncCommander;
 	/**
-	 * Indicates whether the connection is ready for use.
+	 * The auditor instance used for history.
+	 */
+	readonly auditor: TrakitAuditCommander;
+	///**
+	// * The auditor instance used for history.
+	// */
+	//readonly imager: TrakitImageCommander;
+	///**
+	// * The auditor instance used for history.
+	// */
+	//readonly reporter: TrakitReportCommander;
+	///**
+	// * The auditor instance used for history.
+	// */
+	//readonly provisioner: TrakitModemCommander;
+	///**
+	// * The auditor instance used for history.
+	// */
+	//readonly hosting: TrakitHostingCommander;
+
+	/**
+	 * Indicates whether the APIs are ready for use.
 	 * Will be `true` if there is {@link User|user session} or {@link Machine|API credentials}
 	 * available and the underlying WebSocket connection has been established,
 	 * or if there is no authentication details given.
@@ -84,67 +113,92 @@ export type ConnectionContextType = {
 };
 
 /**
- * The React context that provides the connection state and synchronizer instance.
- * This context is used by the `useConnection` hook to access connection information.
- * It should be provided by the `ConnectionProvider` component at a higher level in the component tree.
+ * The React context that provides the connection state and API instances.
+ * This context is used by the `useApi` hook to access APIs and connection information.
+ * It should be provided by the `ApiProvider` component at a higher level in the component tree.
  */
-const ConnectionContext = createContext<ConnectionContextType | null>(null);
+const ApiContext = createContext<ApiContextType | null>(null);
 
 /**
  * Provider component that wraps the application with CookiesProvider.
- * Required for the `useConnection` hook to work properly.
+ * Required for the `useApi` hook to work properly.
  * 
  * @example
  * ```tsx
- * import { ConnectionProvider, useConnection } from '@trakit/react';
+ * import { ApiProvider, useApi } from '@trakit/react';
  * 
  * function App() {
  *   return (
- *     <ConnectionProvider>
+ *     <ApiProvider>
  *       <YourComponent />
- *     </ConnectionProvider>
+ *     </ApiProvider>
  *   );
  * }
  * ```
  */	
-export function ConnectionProvider({
+export function ApiProvider({
 	children,
 	restAddress,
-	socketAddress
+	socketAddress,
+	auditAddress,
+	//imageAddress,
+	//reportAddress,
+	//modemAddress,
+	//hostingAddress,
 }: {
 	children: ReactNode;
 	restAddress?: URL | url | nothing;
 	socketAddress?: URL | url | nothing;
+	auditAddress?: URL | url | nothing;
+	//imageAddress?: URL | url | nothing;
+	//reportAddress?: URL | url | nothing;
+	//modemAddress?: URL | url | nothing;
+	//hostingAddress?: URL | url | nothing;
 }) {
-	//console.log("ConnectionProvider", {
+	//console.log("ApiProvider", {
 	//	restAddress,
 	//	socketAddress,
 	//});
 	return (
 		<CookiesProvider>
-			<ConnectionProviderInner
+			<ApiProviderInner
 				restAddress={restAddress}
 				socketAddress={socketAddress}
+				auditAddress={auditAddress}
+			//	imageAddress={imageAddress}
+			//	reportAddress={reportAddress}
+			//	modemAddress={modemAddress}
+			//	hostingAddress={hostingAddress}
 			>
 				{children}
-			</ConnectionProviderInner>
+			</ApiProviderInner>
 		</CookiesProvider>
 	);
 }
 /**
- * Inner provider component that manages the connection state and synchronizer instance.
- * This component is used internally by the `ConnectionProvider` and should not be used directly.
+ * Inner provider component that manages the connection state and API instances.
+ * This component is used internally by the `ApiProvider` and should not be used directly.
  * It initializes the synchronizer, listens for connection and account events,
  * and provides the current connection state and user/machine information.
  */
-function ConnectionProviderInner({
+function ApiProviderInner({
 	children,
 	restAddress,
 	socketAddress,
+	auditAddress,
+	//imageAddress,
+	//reportAddress,
+	//modemAddress,
+	//hostingAddress,
 }: {
 	children: ReactNode;
 	restAddress?: URL | url | nothing;
 	socketAddress?: URL | url | nothing;
+	auditAddress?: URL | url | nothing;
+	//imageAddress?: URL | url | nothing;
+	//reportAddress?: URL | url | nothing;
+	//modemAddress?: URL | url | nothing;
+	//hostingAddress?: URL | url | nothing;
 }) {
 	/**
 	 * The synchronizer instance used for commands.
@@ -154,9 +208,44 @@ function ConnectionProviderInner({
 		restAddress || TrakitRestfulCommander.URI_PROD,
 		socketAddress || TrakitSocketCommander.URI_PROD,
 	));
+	/**
+	 * The auditor instance used for history.
+	 */
+	const a = useRef(new TrakitAuditCommander(
+		null,
+		auditAddress || TrakitAuditCommander.URI_PROD,
+	));
+	///**
+	// * The auditor instance used for history.
+	// */
+	//const i = useRef(new TrakitImageCommander(
+	//	null,
+	//	imageAddress || TrakitImageCommander.URI_PROD,
+	//));
+	///**
+	// * The auditor instance used for history.
+	// */
+	//const r = useRef(new TrakitReportCommander(
+	//	null,
+	//	reportAddress || TrakitReportCommander.URI_PROD,
+	//));
+	///**
+	// * The auditor instance used for history.
+	// */
+	//const m = useRef(new TrakitModemCommander(
+	//	null,
+	//	modemAddress || TrakitModemCommander.URI_PROD,
+	//));
+	///**
+	// * The auditor instance used for history.
+	// */
+	//const f = useRef(new TrakitHostingCommander(
+	//	null,
+	//	hostingAddress || TrakitHostingCommander.URI_PROD,
+	//));
 
 	/**
-	 * The cookies for session ID, {@link Machine.key}, and {@link Machine.secret}.
+	 * The cookies for {@link RepSelfGet.ghostId}, {@link Machine.key}, and {@link Machine.secret}.
 	 */
 	const [cookies, setCookie, removeCookie] = useCookies([SESSION_ID, MACHINE_KEY, MACHINE_SECRET]);
 	/**
@@ -183,11 +272,11 @@ function ConnectionProviderInner({
 		|| null
 	);
 	/**
-	 * Indicates whether the connection is ready for use.
+	 * Indicates whether the APIs are ready for use.
 	 */
 	const ready = !!(ghostId || machine) === !!(s.current.account.user || s.current.account.machine);
 
-	//console.log("ConnectionInner", {
+	//console.log("ApiInner", {
 	//	ready,
 	//	online,
 	//	ghostId,
@@ -234,6 +323,13 @@ function ConnectionProviderInner({
 			removeCookie(MACHINE_SECRET, COOKIE_OPTIONS);
 		}
 		setMachine(account.machine || null);
+
+		// dependant APIs
+		a.current.setAuth(account);
+		//i.current.setAuth(account);
+		//r.current.setAuth(account);
+		//m.current.setAuth(account);
+		//f.current.setAuth(account);
 	}
 
 	/**
@@ -254,8 +350,13 @@ function ConnectionProviderInner({
 	}, []);
 
 	return (
-		<ConnectionContext value={{
+		<ApiContext value={{
 			synchronizer: s.current,
+			auditor: a.current,
+			//imager: i.current,
+			//reporter: r.current,
+			//provisioner: m.current,
+			//hosting: f.current,
 			ready,
 			ghostId,
 			online,
@@ -263,17 +364,17 @@ function ConnectionProviderInner({
 			machine,
 		}}>
 			{children}
-		</ConnectionContext>
+		</ApiContext>
 	);
 }
 
 /**
- * A React hook that manages the connection to the Trak-iT synchronization service.
+ * A React hook that manages the connection to the Trak-iT synchronization service and APIs.
  * It initializes the synchronizer, listens for connection and account events,
- * and provides the current connection state and user/machine information.
+ * and provides the current connection state, API instances, and user/machine information.
  */
-export function useConnection() { 
-    const ctx = useContext(ConnectionContext);
-    if (!ctx) throw new Error('useConnection must be used within ConnectionProvider');
+export function useApi() { 
+    const ctx = useContext(ApiContext);
+    if (!ctx) throw new Error('useApi must be used within ApiProvider');
     return ctx;
 }
