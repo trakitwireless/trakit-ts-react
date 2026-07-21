@@ -1,7 +1,7 @@
 {
   "name": "@trakit/react",
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "./trakit-react.min.js",
   "types": "./index.d.ts",
   "scripts": {
@@ -37,7 +37,7 @@
   "dependencies": {
     "@trakit/commands": "^0.1.8",
     "@trakit/objects": "^0.1.5",
-    "@trakit/sync": "^0.1.10",
+    "@trakit/sync": "^0.1.11",
     "@types/react": "^19.2.17"
   },
   "peerDependencies": {

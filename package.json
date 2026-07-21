@@ -1,7 +1,7 @@
 {
   "name": "@trakit/react",
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "main": "./trakit-react.min.js",
   "types": "./index.d.ts",
   "scripts": {

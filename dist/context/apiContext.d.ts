@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 /**
  * The result of the `useConnection` hook, providing the synchronizer instance and connection state.
  */
-export type ApiContextType = {
+export type TrakitContextType = {
     /**
      * The synchronizer instance used for commands.
      */
@@ -39,22 +39,22 @@ export type ApiContextType = {
 };
 /**
  * Provider component that wraps the application with CookiesProvider.
- * Required for the `useApi` hook to work properly.
+ * Required for the `useTrakit` hook to work properly.
  *
  * @example
  * ```tsx
- * import { ApiProvider, useApi } from '@trakit/react';
+ * import { TrakitProvider, useTrakit } from '@trakit/react';
  *
  * function App() {
  *   return (
- *     <ApiProvider>
+ *     <TrakitProvider>
  *       <YourComponent />
- *     </ApiProvider>
+ *     </TrakitProvider>
  *   );
  * }
  * ```
  */
-export declare function ApiProvider({ children, restAddress, socketAddress, auditAddress, }: {
+export declare function TrakitProvider({ children, restAddress, socketAddress, auditAddress, }: {
     children: ReactNode;
     restAddress?: URL | url | nothing;
     socketAddress?: URL | url | nothing;
@@ -65,5 +65,5 @@ export declare function ApiProvider({ children, restAddress, socketAddress, audi
  * It initializes the synchronizer, listens for connection and account events,
  * and provides the current connection state, API instances, and user/machine information.
  */
-export declare function useApi(): ApiContextType;
+export declare function useTrakit(): TrakitContextType;
 //# sourceMappingURL=apiContext.d.ts.map
