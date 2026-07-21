@@ -6,9 +6,9 @@
  */
 
 import {
-    ApiProvider,
-    useApi,
-    type ApiContextType,
+    TrakitProvider,
+    useTrakit,
+    type TrakitContextType,
 } from "./context/apiContext";
 import useIsOnline from "./hooks/useIsOnline";
 import {
@@ -28,19 +28,19 @@ export const version = '0.0.12';
  * Hooks
  */
 export {
-	useApi,
-	useIsOnline,
-	useSingle,
-	useSync,
-	type UseSyncMultiple,
-	type UseSyncResult,
-	type UseSyncSingle
+    useIsOnline,
+    useSingle,
+    useSync,
+    useTrakit,
+    type UseSyncMultiple,
+    type UseSyncResult,
+    type UseSyncSingle,
 };
 
 /**
  * Context provider for connection state and API instances.
  */
 export {
-	ApiProvider,
-	type ApiContextType
+	TrakitProvider,
+	type TrakitContextType,
 };

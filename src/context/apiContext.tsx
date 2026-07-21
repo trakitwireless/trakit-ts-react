@@ -61,7 +61,7 @@ const COOKIE_OPTIONS: CookieSetOptions = {
 /**
  * The result of the `useConnection` hook, providing the synchronizer instance and connection state.
  */
-export type ApiContextType = {
+export type TrakitContextType = {
 	/**
 	 * The synchronizer instance used for commands.
 	 */
@@ -114,29 +114,29 @@ export type ApiContextType = {
 
 /**
  * The React context that provides the connection state and API instances.
- * This context is used by the `useApi` hook to access APIs and connection information.
- * It should be provided by the `ApiProvider` component at a higher level in the component tree.
+ * This context is used by the `useTrakit` hook to access APIs and connection information.
+ * It should be provided by the `TrakitProvider` component at a higher level in the component tree.
  */
-const ApiContext = createContext<ApiContextType | null>(null);
+const TrakitContext = createContext<TrakitContextType | null>(null);
 
 /**
  * Provider component that wraps the application with CookiesProvider.
- * Required for the `useApi` hook to work properly.
+ * Required for the `useTrakit` hook to work properly.
  * 
  * @example
  * ```tsx
- * import { ApiProvider, useApi } from '@trakit/react';
+ * import { TrakitProvider, useTrakit } from '@trakit/react';
  * 
  * function App() {
  *   return (
- *     <ApiProvider>
+ *     <TrakitProvider>
  *       <YourComponent />
- *     </ApiProvider>
+ *     </TrakitProvider>
  *   );
  * }
  * ```
  */	
-export function ApiProvider({
+export function TrakitProvider({
 	children,
 	restAddress,
 	socketAddress,
@@ -155,13 +155,13 @@ export function ApiProvider({
 	//modemAddress?: URL | url | nothing;
 	//hostingAddress?: URL | url | nothing;
 }) {
-	//console.log("ApiProvider", {
+	//console.log("TrakitProvider", {
 	//	restAddress,
 	//	socketAddress,
 	//});
 	return (
 		<CookiesProvider>
-			<ApiProviderInner
+			<TrakitInner
 				restAddress={restAddress}
 				socketAddress={socketAddress}
 				auditAddress={auditAddress}
@@ -171,17 +171,17 @@ export function ApiProvider({
 			//	hostingAddress={hostingAddress}
 			>
 				{children}
-			</ApiProviderInner>
+			</TrakitInner>
 		</CookiesProvider>
 	);
 }
 /**
  * Inner provider component that manages the connection state and API instances.
- * This component is used internally by the `ApiProvider` and should not be used directly.
+ * This component is used internally by the `TrakitProvider` and should not be used directly.
  * It initializes the synchronizer, listens for connection and account events,
  * and provides the current connection state and user/machine information.
  */
-function ApiProviderInner({
+function TrakitInner({
 	children,
 	restAddress,
 	socketAddress,
@@ -276,7 +276,7 @@ function ApiProviderInner({
 	 */
 	const ready = !!(ghostId || machine) === !!(s.current.account.user || s.current.account.machine);
 
-	//console.log("ApiInner", {
+	//console.log("TrakitInner", {
 	//	ready,
 	//	online,
 	//	ghostId,
@@ -350,7 +350,7 @@ function ApiProviderInner({
 	}, []);
 
 	return (
-		<ApiContext value={{
+		<TrakitContext value={{
 			synchronizer: s.current,
 			auditor: a.current,
 			//imager: i.current,
@@ -364,7 +364,7 @@ function ApiProviderInner({
 			machine,
 		}}>
 			{children}
-		</ApiContext>
+		</TrakitContext>
 	);
 }
 
@@ -373,8 +373,8 @@ function ApiProviderInner({
  * It initializes the synchronizer, listens for connection and account events,
  * and provides the current connection state, API instances, and user/machine information.
  */
-export function useApi() { 
-    const ctx = useContext(ApiContext);
-    if (!ctx) throw new Error('useApi must be used within ApiProvider');
+export function useTrakit() { 
+    const ctx = useContext(TrakitContext);
+    if (!ctx) throw new Error('useTrakit must be used within TrakitProvider');
     return ctx;
 }
