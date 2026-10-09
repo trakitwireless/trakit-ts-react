@@ -6,6 +6,7 @@ const obfuscate = {
 	compress: {
 		drop_console: true,
 		drop_debugger: true,
+		directives: false,
 		hoist_funs: true,
 		module: true,
 		toplevel: true,
@@ -25,6 +26,7 @@ export default [
 				file: 'dist/trakit-react.min.js',
 				format: 'es',
 				exports: 'named',
+				banner: "'use client';",
 				plugins: [terser(obfuscate)]
 			}
 		],
