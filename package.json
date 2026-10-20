@@ -41,8 +41,8 @@
     "@trakit/commands": "^0.1.8",
     "@trakit/objects": "^0.1.5",
     "@trakit/sync": "^0.1.11",
-    "react": "19.2.3",
+    "react": "^19.2.3",
     "react-cookie": "^8.0.1",
-    "react-dom": "19.2.3"
+    "react-dom": "^19.2.3"
   }
 }
