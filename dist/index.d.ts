@@ -10,7 +10,7 @@ import { useSingle, useSync, UseSyncMultiple, UseSyncResult, UseSyncSingle } fro
 /**
  * Version number for this release.
  */
-export declare const version = "0.0.14";
+export declare const version = "0.0.15";
 /**
  * Hooks
  */
